@@ -103,7 +103,7 @@ if( isset( $_FILES[ 'import_contacts' ] ) && isset( $_POST[ 'wpcrm_system_import
 				
 				if( $i > 0 ) {
 					// If the page doesn't already exist, then create it
-					if( null == get_page_by_title( $title, OBJECT, 'wpcrm-contact' ) ) {
+					if( wpcrm_system_import_contacts_duplicate( $title, $fileop ) ) {
 						$post_id = wp_insert_post(
 							array(
 								'comment_status'	=>	'closed',
@@ -243,3 +243,12 @@ if( isset( $_FILES[ 'import_contacts' ] ) && isset( $_POST[ 'wpcrm_system_import
 		</table>
 	</div>
 </div>
+<?php
+function wpcrm_system_import_contacts_duplicate( $title, $fields ){
+	if ( null == get_page_by_title( $title, OBJECT, 'wpcrm-contact' ) ){
+		$create_contact = true;
+	}
+	//Contact will be created if returns true.
+	//Contact will not be created if returns false.
+	return apply_filters( 'wp_crm_system_import_contacts_duplicate', $create_contact, $title, $fields );
+}

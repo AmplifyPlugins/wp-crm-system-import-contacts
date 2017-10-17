@@ -3,7 +3,7 @@
    Plugin Name: WP-CRM System Import Contacts
    Plugin URI: https://www.wp-crm.com
    Description: Upload contacts to WP-CRM System in a CSV file.
-   Version: 2.2.2
+   Version: 2.2.3
    Author: Scott DeLuzio
    Author URI: https://www.wp-crm.com
    Text Domain: wp-crm-system-import-contacts
@@ -16,6 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 if ( ! defined( 'WPCRM_IMPORT_CONTACTS' ) ){
 	define( 'WPCRM_IMPORT_CONTACTS', __FILE__ );
+}
+if ( ! defined( 'WPCRM_IMPORT_CONTACTS_VERSION' ) ){
+	define( 'WPCRM_IMPORT_CONTACTS_VERSION', '2.2.3' );
 }
 if ( ! defined( 'WPCRM_IMPORT_CONTACTS_DIR' ) ){
 	define( 'WPCRM_IMPORT_CONTACTS_DIR', plugin_dir_path( __FILE__ ) );
@@ -48,10 +51,10 @@ function wpcrm_import_contacts_updater() {
 
 	// setup the updater
 	$edd_updater = new WPCRM_SYSTEM_SL_Plugin_Updater( WPCRM_BASE_STORE_URL, __FILE__, array(
-			'version' 	=> '2.2.2', 				// current version number
-			'license' 	=> $license_key, 		// license key (used get_option above to retrieve from DB)
-			'item_name' => WPCRM_IMPORT_CONTACTS_NAME, 	// name of this plugin
-			'author' 	=> 'Scott DeLuzio'  // author of this plugin
+			'version' 	=> WPCRM_IMPORT_CONTACTS_VERSION,	// current version number
+			'license' 	=> $license_key,					// license key (used get_option above to retrieve from DB)
+			'item_name' => WPCRM_IMPORT_CONTACTS_NAME,		// name of this plugin
+			'author' 	=> 'Scott DeLuzio'					// author of this plugin
 		)
 	);
 
