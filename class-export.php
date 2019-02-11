@@ -9,7 +9,7 @@ class WPCRM_System_Export_Contacts extends WPCRM_System_Export{
 	 * @since 2.1
 	 */
 	public $export_type = 'wpcrm-contact';
-	
+
 	/**
 	 * Set the CSV columns
 	 *
@@ -57,7 +57,7 @@ class WPCRM_System_Export_Contacts extends WPCRM_System_Export{
 				$cols = array_merge( $cols, $custom_fields );
 			}
 		}
-		
+
 		$cols = apply_filters( 'wpcrm_system_export_cols_' . $this->export_type, $cols );
 
 		return $cols;
@@ -76,7 +76,7 @@ class WPCRM_System_Export_Contacts extends WPCRM_System_Export{
 			$data[$id] = array(
 				'contact_name' 		=> get_the_title( $id ),
 				'contact_id' 		=> $id,
-				'prefix' 			=> get_post_meta( $id, '_wpcrm_contact-prefix', true ),
+				'prefix' 			=> get_post_meta( $id, '_wpcrm_contact-name-prefix', true ),
 				'first_name'		=> get_post_meta( $id, '_wpcrm_contact-first-name', true ),
 				'last_name'			=> get_post_meta( $id, '_wpcrm_contact-last-name', true ),
 				'organization'		=> get_the_title( get_post_meta( $id, '_wpcrm_contact-attach-to-organization', true ) ),
@@ -105,7 +105,33 @@ class WPCRM_System_Export_Contacts extends WPCRM_System_Export{
 						$can_export 	= $field_scope == $this->export_type ? true : false;
 						if( $can_export ){
 							$value 	= get_post_meta( $id, '_wpcrm_custom_field_id_' . $field, true );
-							$export = $field_type == 'datepicker' ? date( get_option( 'wpcrm_system_php_date_format' ), $value ) : $value;
+							switch ( $field_type ) {
+								case 'datepicker':
+									$export = date( get_option( 'wpcrm_system_php_date_format' ), $value );
+									break;
+								case 'repeater-date':
+									if ( is_array( $value ) ){
+										foreach ( $value as $key => $v ){
+											$values[$key] = date( get_option( 'wpcrm_system_php_date_format' ), $v );
+										}
+										$export = implode( ',', $values );
+									} else {
+										$export = '';
+									}
+									break;
+								case 'repeater-file':
+								case 'repeater-text':
+								case 'repeater-textarea':
+									if ( is_array( $value ) ){
+										$export = implode( ',', $value );
+									} else {
+										$export = '';
+									}
+									break;
+								default:
+									$export = $value;
+									break;
+							}
 							$data[$id][] = $export;
 						}
 					}
